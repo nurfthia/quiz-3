@@ -2,8 +2,10 @@ POST http://localhost:3000/login
 Content-Type:application/json
 
 {
-    "username": "fathia",
-    "password": "060899"
+      "username": "fathia",
+      "password": "060899",
+      "name": "Fathia",
+      "email": "fathia@utem.edu.my"
 }
 
 ###
