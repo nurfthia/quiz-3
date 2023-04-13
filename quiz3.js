@@ -9,14 +9,15 @@ app.post('/login', (req, res) => {
 
     let result = login(req.body.username, req.body.password)
 
-    res.send(result)
+    let token = generateToken(result)
+    res.send(token)
 })
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/bye', (req, res) => {
+app.get('/bye',(verifyToken), (req, res) => {
     res.send('Bubyeee Semua!')
 })
 
@@ -66,8 +67,35 @@ function register(requsername, reqpassword, reqname, reqemail) {
   })
 }
 
+const jwt = require('jsonwebtoken');
+function generateToken(userData) {
+  const token = jwt.sign(
+    userData,
+    'inipassword',
+    {expiresIn: 60}
+  );
+  return token
+}
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
-//try login
+function verifyToken(req, res, next) {
+  let header = req.headers.authorization
+  console.log(header) 
+
+  let token = header.split(' ')[1]
+
+  jwt.verify(token, 'inipassword',function(err,decoded){
+
+  if(err) {
+    res.send("Invalid Token")
+  
+  }
+  
+  req.user = decoded
+  next()
+});
+
+}
